@@ -84,7 +84,7 @@ INSERT INTO
     admin_users (username, password_hash)
 VALUES (
         'admin',
-        '$2y$10$e0MYzXyjpJS7Pd0RVvHwHe6noIllL9DFMgXJGnU.SueFmkE4NQVqC'
+        '$2y$10$3q1uc33uJPWGAFvZwDEjqendUOxipXo5wDrJnSQMOdy/02.mfrPZ2'
     );
 
 -- Konfiguration für einwahl_offen
