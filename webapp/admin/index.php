@@ -138,6 +138,41 @@ if ($_POST) {
 
                     $message = 'Passwort wurde erfolgreich geändert.';
                     break;
+
+                case 'delete_all_einwahlen':
+                    // Alle Einwahlen löschen
+                    if (!isset($_POST['confirm_delete']) || $_POST['confirm_delete'] !== 'ALLE_LOESCHEN') {
+                        throw new Exception("Bestätigung fehlt. Geben Sie 'ALLE_LOESCHEN' ein.");
+                    }
+
+                    $db = new Database();
+                    $deleted_count = $db->fetchOne("SELECT COUNT(*) as count FROM einwahlen")['count'];
+                    $db->query("DELETE FROM einwahlen");
+
+                    $message = "Alle {$deleted_count} Einwahlen wurden gelöscht.";
+                    break;
+
+                case 'delete_einzelne_einwahl':
+                    // Einzelne Einwahl löschen
+                    $einwahl_id = intval($_POST['einwahl_id']);
+                    if (!$einwahl_id) {
+                        throw new Exception("Ungültige Einwahl-ID.");
+                    }
+
+                    $db = new Database();
+                    $einwahl = $db->fetchOne(
+                        "SELECT vorname, nachname FROM einwahlen WHERE id = ?",
+                        [$einwahl_id]
+                    );
+
+                    if (!$einwahl) {
+                        throw new Exception("Einwahl nicht gefunden.");
+                    }
+
+                    $db->query("DELETE FROM einwahlen WHERE id = ?", [$einwahl_id]);
+
+                    $message = "Einwahl von {$einwahl['vorname']} {$einwahl['nachname']} wurde gelöscht.";
+                    break;
             }
         }
     } catch (Exception $e) {

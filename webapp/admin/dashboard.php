@@ -27,194 +27,305 @@
             <div class="message error"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <div class="dashboard-grid">
-            <!-- Einwahl-Status -->
-            <div class="card">
-                <h3>
-                    Einwahl-Status
-                    <span class="status-indicator <?= $einwahl_offen ? 'status-open' : 'status-closed' ?>">
-                        <?= $einwahl_offen ? 'OFFEN' : 'GESCHLOSSEN' ?>
-                    </span>
-                </h3>
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="overview">Übersicht</button>
+            <button class="tab-btn" data-tab="students">Schüler-Verwaltung</button>
+            <button class="tab-btn" data-tab="config">Konfiguration</button>
+            <button class="tab-btn" data-tab="account">Account</button>
+        </div>
 
-                <form method="post" style="display: inline;">
-                    <input type="hidden" name="action" value="toggle_einwahl">
-                    <button type="submit" class="btn <?= $einwahl_offen ? 'btn-danger' : 'btn-success' ?>">
-                        <?= $einwahl_offen ? 'Einwahl schließen' : 'Einwahl öffnen' ?>
-                    </button>
-                </form>
+        <!-- Tab: Übersicht -->
+        <div class="tab-content active" id="tab-overview">
+            <div class="dashboard-grid">
+                <!-- Einwahl-Status -->
+                <div class="card status-card">
+                    <div class="card-header">
+                        <h3>Einwahl-Status</h3>
+                        <span class="status-indicator <?= $einwahl_offen ? 'status-open' : 'status-closed' ?>">
+                            <?= $einwahl_offen ? 'OFFEN' : 'GESCHLOSSEN' ?>
+                        </span>
+                    </div>
 
-                <p style="margin-top: 1rem; color: #6c757d; font-size: 0.9rem;">
-                    Gesamt: <?= count($einwahlen) ?> Einwahlen
-                </p>
-            </div>
-
-            <!-- Statistiken -->
-            <div class="card">
-                <h3>Schwerpunkt-Statistiken</h3>
-                <ul class="stats-list">
-                    <?php foreach ($statistiken as $stat): ?>
-                        <li class="stats-item">
-                            <span class="stats-item-name"><?= htmlspecialchars($stat['name']) ?></span>
-                            <div class="stats-item-data">
-                                <span class="stats-count">
-                                    <?= $stat['anzahl'] ?>/<?= $stat['max'] ?>
-                                </span>
-                                <div class="progress-bar">
-                                    <div class="progress-fill <?= $stat['prozent'] >= 100 ? 'progress-full' : '' ?>"
-                                        style="width: <?= min($stat['prozent'], 100) ?>%"></div>
-                                </div>
-                                <span class="progress-percentage">
-                                    <?= $stat['prozent'] ?>%
-                                </span>
+                    <div class="card-body">
+                        <div class="status-info">
+                            <div class="status-metric">
+                                <span class="metric-number"><?= count($einwahlen) ?></span>
+                                <span class="metric-label">Einwahlen gesamt</span>
                             </div>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
+                        </div>
 
-            <!-- Export -->
-            <div class="card">
-                <h3>Daten-Export</h3>
-                <form method="post">
-                    <input type="hidden" name="action" value="csv_export">
-                    <button type="submit" class="btn btn-primary">
-                        📊 CSV-Export herunterladen
-                    </button>
-                </form>
-                <p style="margin-top: 1rem; color: #6c757d; font-size: 0.9rem;">
-                    Exportiert alle Einwahlen als CSV-Datei für Excel.
-                </p>
-            </div>
-
-            <!-- Passwort ändern -->
-            <div class="card">
-                <h3>Passwort ändern</h3>
-                <form method="post" id="passwordForm">
-                    <input type="hidden" name="action" value="change_password">
-
-                    <div class="form-group">
-                        <label for="current_password">Aktuelles Passwort</label>
-                        <input type="password" id="current_password" name="current_password" required>
+                        <form method="post" class="status-form">
+                            <input type="hidden" name="action" value="toggle_einwahl">
+                            <button type="submit" class="btn btn-lg <?= $einwahl_offen ? 'btn-danger' : 'btn-success' ?>">
+                                <?= $einwahl_offen ? '🔒 Einwahl schließen' : '🔓 Einwahl öffnen' ?>
+                            </button>
+                        </form>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label for="new_password">Neues Passwort</label>
-                        <input type="password" id="new_password" name="new_password" required minlength="6">
+                <!-- Statistiken -->
+                <div class="card stats-card">
+                    <div class="card-header">
+                        <h3>Schwerpunkt-Statistiken</h3>
                     </div>
-
-                    <div class="form-group">
-                        <label for="confirm_password">Passwort bestätigen</label>
-                        <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+                    <div class="card-body">
+                        <div class="stats-grid">
+                            <?php foreach ($statistiken as $stat): ?>
+                                <div class="stat-item">
+                                    <div class="stat-header">
+                                        <span class="stat-name"><?= htmlspecialchars($stat['name']) ?></span>
+                                        <span class="stat-count"><?= $stat['anzahl'] ?>/<?= $stat['max'] ?></span>
+                                    </div>
+                                    <div class="stat-progress">
+                                        <div class="progress-bar-modern">
+                                            <div class="progress-fill-modern <?= $stat['prozent'] >= 100 ? 'progress-full' : '' ?>"
+                                                style="width: <?= min($stat['prozent'], 100) ?>%"></div>
+                                        </div>
+                                        <span class="stat-percentage"><?= $stat['prozent'] ?>%</span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-warning">
-                        🔒 Passwort ändern
-                    </button>
-                </form>
+                <!-- Quick Actions -->
+                <div class="card actions-card">
+                    <div class="card-header">
+                        <h3>Schnellaktionen</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <form method="post" class="action-item">
+                                <input type="hidden" name="action" value="csv_export">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    📊 CSV-Export
+                                </button>
+                                <small>Alle Einwahlen exportieren</small>
+                            </form>
+
+                            <div class="action-item danger-zone">
+                                <button type="button" class="btn btn-danger btn-block" id="deleteAllBtn">
+                                    🗑️ Alle Einwahlen löschen
+                                </button>
+                                <small>⚠️ Vorsicht: Nicht rückgängig machbar!</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Konfiguration -->
-        <div class="card" style="margin-bottom: 2rem;">
-            <h3>Hinweistext-Konfiguration</h3>
-            <div class="config-help">
-                <h4>Anleitung:</h4>
-                <p>Dieser Text wird über dem Einwahlformular angezeigt. Verwenden Sie:</p>
-                <ul>
-                    <li><code>• Text</code> für Aufzählungspunkte</li>
-                    <li>Zeilenumbrüche für neue Absätze</li>
-                    <li><strong>**Text**</strong> wird automatisch fett dargestellt</li>
-                </ul>
-            </div>
-
-            <form method="post">
-                <input type="hidden" name="action" value="update_hinweistext">
-                <div class="form-group">
-                    <label for="hinweistext">Hinweistext für Schüler:</label>
-                    <textarea id="hinweistext" name="hinweistext" style="min-height: 120px;" placeholder="• Erster Hinweis&#10;• Zweiter Hinweis&#10;&#10;Weitere Informationen..."><?= htmlspecialchars($hinweistext) ?></textarea>
+        <!-- Tab: Schüler-Verwaltung -->
+        <div class="tab-content" id="tab-students">
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>Alle Einwahlen (<?= count($einwahlen) ?>)</h3>
+                    <div class="table-actions">
+                        <input type="text" id="student-search" placeholder="Schüler suchen..." class="search-input">
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-success">Hinweistext übernehmen</button>
-            </form>
+
+                <div class="card-body">
+                    <?php if (empty($einwahlen)): ?>
+                        <div class="empty-state">
+                            Noch keine Einwahlen vorhanden.
+                        </div>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table id="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Klasse</th>
+                                        <th>E-Mail</th>
+                                        <th>Schwerpunkt 1</th>
+                                        <th>Schwerpunkt 2</th>
+                                        <th>Einwahl am</th>
+                                        <th width="100">Aktionen</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($einwahlen as $einwahl): ?>
+                                        <tr data-id="<?= $einwahl['id'] ?>">
+                                            <td>
+                                                <strong><?= htmlspecialchars($einwahl['vorname'] . ' ' . $einwahl['nachname']) ?></strong>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-secondary"><?= htmlspecialchars($einwahl['klasse']) ?></span>
+                                            </td>
+                                            <td><?= htmlspecialchars($einwahl['email'] ?: '-') ?></td>
+                                            <td>
+                                                <span class="badge badge-primary"><?= htmlspecialchars($einwahl['erstwunsch']) ?></span>
+                                            </td>
+                                            <td>
+                                                <?php if ($einwahl['zweitwunsch']): ?>
+                                                    <span class="badge badge-primary"><?= htmlspecialchars($einwahl['zweitwunsch']) ?></span>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <small><?= date('d.m.Y H:i', strtotime($einwahl['created_at'])) ?></small>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-danger delete-student-btn"
+                                                    data-id="<?= $einwahl['id'] ?>"
+                                                    data-name="<?= htmlspecialchars($einwahl['vorname'] . ' ' . $einwahl['nachname']) ?>">
+                                                    🗑️
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
 
-        <div class="card" style="margin-bottom: 2rem;">
-            <h3>Klassen-Konfiguration</h3>
-            <div class="config-help">
-                <h4>Anleitung:</h4>
-                <p>Geben Sie jede Klassenbezeichnung in eine separate Zeile ein. Beispiel:</p>
-                <code>BüA-1A<br>BüA-1B<br>BüA-2A</code>
-            </div>
+        <!-- Tab: Konfiguration -->
+        <div class="tab-content" id="tab-config">
+            <div class="config-grid">
+                <!-- Hinweistext -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Hinweistext für Schüler</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="config-help">
+                            <p>Dieser Text wird über dem Einwahlformular angezeigt.</p>
+                            <p><strong>Formatierung:</strong> <code>• Text</code> für Aufzählungen</p>
+                        </div>
 
-            <form method="post">
-                <input type="hidden" name="action" value="update_klassen">
-                <div class="form-group">
-                    <label for="klassen_config">Klassenbezeichnungen (eine pro Zeile):</label>
-                    <textarea id="klassen_config" name="klassen_config"><?= htmlspecialchars($klassen_config) ?></textarea>
+                        <form method="post">
+                            <input type="hidden" name="action" value="update_hinweistext">
+                            <div class="form-group">
+                                <textarea id="hinweistext" name="hinweistext" rows="6"
+                                    placeholder="• Erster Hinweis&#10;• Zweiter Hinweis"><?= htmlspecialchars($hinweistext) ?></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Speichern</button>
+                        </form>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-success">Klassen übernehmen</button>
-            </form>
+
+                <!-- Klassen -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Klassen-Konfiguration</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="config-help">
+                            <p>Eine Klassenbezeichnung pro Zeile eingeben.</p>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" name="action" value="update_klassen">
+                            <div class="form-group">
+                                <textarea id="klassen_config" name="klassen_config" rows="6"><?= htmlspecialchars($klassen_config) ?></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Speichern</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Schwerpunkte -->
+                <div class="card config-card-full">
+                    <div class="card-header">
+                        <h3>Schwerpunkt-Konfiguration</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="config-help">
+                            <p><strong>Format:</strong></p>
+                            <ul>
+                                <li><code>12,Informationstechnik</code> für einzelne Schwerpunkte</li>
+                                <li><code>12,Metall;Elektrotechnik</code> für Pflicht-Kombinationen</li>
+                            </ul>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" name="action" value="update_schwerpunkte">
+                            <div class="form-group">
+                                <textarea id="schwerpunkte_config" name="schwerpunkte_config" rows="8"
+                                    placeholder="10,Kraftfahrzeugtechnik&#10;10,Informationstechnik&#10;12,Metall;Elektrotechnik"><?= htmlspecialchars($schwerpunkte_config) ?></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Speichern</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="card" style="margin-bottom: 2rem;">
-            <h3>Schwerpunkt-Konfiguration</h3>
-            <div class="config-help">
-                <h4>Anleitung:</h4>
-                <p><strong>Einzelne Schwerpunkte:</strong> <code>12,Informationstechnik</code></p>
-                <p><strong>Pflicht-Kombinationen:</strong> <code>12,Metall;Elektrotechnik</code></p>
-                <ul style="margin-top: 0.5rem;">
-                    <li>Zahl vor dem Komma = maximale Teilnehmerzahl</li>
-                    <li>Semikolon trennt Kombinationspartner</li>
-                    <li>Eine Konfiguration pro Zeile</li>
-                </ul>
+        <!-- Tab: Account -->
+        <div class="tab-content" id="tab-account">
+            <div class="account-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Passwort ändern</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="passwordForm">
+                            <input type="hidden" name="action" value="change_password">
+
+                            <div class="form-group">
+                                <label for="current_password">Aktuelles Passwort</label>
+                                <input type="password" id="current_password" name="current_password" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new_password">Neues Passwort</label>
+                                <input type="password" id="new_password" name="new_password" required minlength="6">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirm_password">Passwort bestätigen</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                🔒 Passwort ändern
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <form method="post">
-                <input type="hidden" name="action" value="update_schwerpunkte">
-                <div class="form-group">
-                    <label for="schwerpunkte_config">Schwerpunkt-Konfiguration:</label>
-                    <textarea id="schwerpunkte_config" name="schwerpunkte_config" placeholder="10,Kraftfahrzeugtechnik&#10;10,Informationstechnik&#10;10,Handel&#10;12,Metall;Elektrotechnik&#10;12,Verwaltung;Ernährung"><?= htmlspecialchars($schwerpunkte_config) ?></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Schwerpunkte übernehmen</button>
-            </form>
-        </div>
-
-        <!-- Einwahlen-Tabelle -->
-        <div class="table-container">
-            <h3 style="margin-bottom: 1rem;">Alle Einwahlen (<?= count($einwahlen) ?>)</h3>
-
-            <?php if (empty($einwahlen)): ?>
-                <div class="empty-state">
-                    Noch keine Einwahlen vorhanden.
-                </div>
-            <?php else: ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Klasse</th>
-                            <th>E-Mail</th>
-                            <th>Erstwunsch</th>
-                            <th>Zweitwunsch</th>
-                            <th>Einwahl am</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($einwahlen as $einwahl): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($einwahl['vorname'] . ' ' . $einwahl['nachname']) ?></td>
-                                <td><?= htmlspecialchars($einwahl['klasse']) ?></td>
-                                <td><?= htmlspecialchars($einwahl['email'] ?: '-') ?></td>
-                                <td><?= htmlspecialchars($einwahl['erstwunsch']) ?></td>
-                                <td><?= htmlspecialchars($einwahl['zweitwunsch'] ?: '-') ?></td>
-                                <td><?= date('d.m.Y H:i', strtotime($einwahl['created_at'])) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php endif; ?>
         </div>
     </div>
+
+    <!-- Modal für "Alle löschen" -->
+    <div id="deleteAllModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⚠️ Alle Einwahlen löschen</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Diese Aktion kann nicht rückgängig gemacht werden!</strong></p>
+                <p>Alle <?= count($einwahlen) ?> Einwahlen werden unwiderruflich gelöscht.</p>
+
+                <form method="post" id="deleteAllForm">
+                    <input type="hidden" name="action" value="delete_all_einwahlen">
+                    <div class="form-group">
+                        <label for="confirm_delete">Geben Sie <code>ALLE_LOESCHEN</code> ein:</label>
+                        <input type="text" id="confirm_delete" name="confirm_delete" required
+                            placeholder="ALLE_LOESCHEN" autocomplete="off">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary modal-cancel">Abbrechen</button>
+                <button type="submit" form="deleteAllForm" class="btn btn-danger">Alle löschen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form für einzelne Löschung (versteckt) -->
+    <form id="deleteStudentForm" method="post" style="display: none;">
+        <input type="hidden" name="action" value="delete_einzelne_einwahl">
+        <input type="hidden" name="einwahl_id" id="delete_einwahl_id">
+    </form>
 </body>
 
 </html>

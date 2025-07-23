@@ -8,14 +8,141 @@ class AdminDashboard {
     }
     
     init() {
+        this.initTabNavigation();
         this.initFormValidation();
         this.initConfirmDialogs();
         this.initAutoRefresh();
         this.initKeyboardShortcuts();
         this.initTableSorting();
         this.initPasswordForm();
+        this.initStudentSearch();
         
         console.log('Admin Dashboard initialisiert');
+    }
+    
+    /**
+     * Tab-Navigation initialisieren
+     */
+    initTabNavigation() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+                
+                // Alle Tabs deaktivieren
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Aktiven Tab aktivieren
+                button.classList.add('active');
+                document.getElementById(`tab-${targetTab}`).classList.add('active');
+                
+                // URL-Hash aktualisieren
+                window.history.replaceState(null, null, `#${targetTab}`);
+            });
+        });
+        
+        // Tab aus URL-Hash laden
+        const hash = window.location.hash.substring(1);
+        if (hash && document.getElementById(`tab-${hash}`)) {
+            document.querySelector(`[data-tab="${hash}"]`).click();
+        }
+    }
+    
+    /**
+     * Schüler-Suche initialisieren
+     */
+    initStudentSearch() {
+        const searchInput = document.getElementById('student-search');
+        const studentsTable = document.getElementById('students-table');
+        
+        if (!searchInput || !studentsTable) return;
+        
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = studentsTable.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+        
+        // Event-Listener für Lösch-Buttons
+        const deleteButtons = document.querySelectorAll('.delete-student-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = button.dataset.id;
+                const name = button.dataset.name;
+                this.deleteStudent(id, name);
+            });
+        });
+        
+        // Event-Listener für "Alle löschen" Button
+        const deleteAllBtn = document.getElementById('deleteAllBtn');
+        if (deleteAllBtn) {
+            deleteAllBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.showDeleteAllModal();
+            });
+        }
+    }
+    
+    /**
+     * Modal für "Alle löschen" anzeigen
+     */
+    showDeleteAllModal() {
+        console.log('showDeleteAllModal aufgerufen'); // Debug
+        const modal = document.getElementById('deleteAllModal');
+        if (modal) {
+            modal.classList.add('show');
+            
+            // Focus auf Eingabefeld setzen
+            setTimeout(() => {
+                const input = document.getElementById('confirm_delete');
+                if (input) {
+                    input.value = ''; // Feld leeren
+                    input.focus();
+                }
+            }, 100);
+        }
+    }
+    
+    /**
+     * Modal für "Alle löschen" schließen
+     */
+    closeDeleteAllModal() {
+        console.log('closeDeleteAllModal aufgerufen'); // Debug
+        const modal = document.getElementById('deleteAllModal');
+        if (modal) {
+            modal.classList.remove('show');
+            
+            // Formular zurücksetzen
+            const form = document.getElementById('deleteAllForm');
+            if (form) form.reset();
+        }
+    }
+    
+    /**
+     * Einzelnen Schüler löschen
+     */
+    deleteStudent(id, name) {
+        if (confirm(`Möchten Sie die Einwahl von "${name}" wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden.`)) {
+            const form = document.getElementById('deleteStudentForm');
+            const idInput = document.getElementById('delete_einwahl_id');
+            
+            if (form && idInput) {
+                idInput.value = id;
+                form.submit();
+            }
+        }
     }
     
     /**
@@ -174,6 +301,18 @@ class AdminDashboard {
         const passwordForm = document.getElementById('passwordForm');
         if (passwordButton && passwordForm && passwordForm.contains(passwordButton)) {
             // Wird bereits in initPasswordForm() behandelt
+        }
+        
+        // Alle löschen Button
+        const deleteAllButton = document.querySelector('button[onclick="showDeleteAllModal()"]');
+        if (deleteAllButton) {
+            deleteAllButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!confirm('Sind Sie sicher, dass Sie alle Einwahlen löschen möchten? Dies öffnet ein Bestätigungsfenster.')) {
+                    return;
+                }
+                showDeleteAllModal();
+            });
         }
     }
     
@@ -619,7 +758,53 @@ document.head.appendChild(styleElement);
 document.addEventListener('DOMContentLoaded', () => {
     // Nur initialisieren wenn wir im Admin-Bereich sind
     if (document.querySelector('.header')) {
-        new AdminDashboard();
+        console.log('Admin Dashboard wird initialisiert...'); // Debug
+        
+        // Sicherstellen, dass Modal initial versteckt ist
+        const modal = document.getElementById('deleteAllModal');
+        if (modal) {
+            modal.classList.remove('show');
+            console.log('Modal initial versteckt'); // Debug
+        }
+        
+        const dashboard = new AdminDashboard();
+        
+        // Globale Event-Listener für Modal
+        if (modal) {
+            // Modal schließen mit Close-Button
+            const closeBtn = modal.querySelector('.modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dashboard.closeDeleteAllModal();
+                });
+            }
+            
+            // Modal schließen mit Abbrechen-Button
+            const cancelBtn = modal.querySelector('.modal-cancel');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dashboard.closeDeleteAllModal();
+                });
+            }
+            
+            // Modal schließen bei Klick außerhalb
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    dashboard.closeDeleteAllModal();
+                }
+            });
+        }
+        
+        // ESC-Taste für Modal schließen
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                dashboard.closeDeleteAllModal();
+            }
+        });
+        
+        console.log('Admin Dashboard initialisiert'); // Debug
     }
 });
 
