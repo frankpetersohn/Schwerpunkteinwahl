@@ -157,6 +157,9 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
         <div class="admin-link">
             <a href="admin/">Admin-Bereich</a>
         </div>
+        <div class="footer">
+            @frpetson
+        </div>
     </div>
 
     <script>

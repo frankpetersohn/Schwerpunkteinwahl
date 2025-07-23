@@ -1,246 +1,318 @@
 # BüA Schwerpunkt-Einwahl Webapp
 
-Eine webbasierte Anwendung für die Einwahl von Schülern in Schwerpunktkurse der Schulform BüA (Berufsfachschule zum Übergang in Ausbildung).
+Eine moderne, webbasierte Anwendung für die Einwahl von Schülern in Schwerpunktkurse der Schulform BüA (Berufsfachschule zum Übergang in Ausbildung).
 
-## Features
+## 🚀 Features
 
-### Schüler-Interface
+### **Schüler-Interface**
 
-- **Intuitive Einwahl**: Schüler können sich mit Vor- und Nachname, Klasse und optional E-Mail-Adresse einwählen
-- **Dynamische Kursauswahl**: Zweitwunsch wird automatisch basierend auf dem Erstwunsch und den Kombinationsregeln gefiltert
-- **Echtzeit-Kapazitätsanzeige**: Aktuelle Belegung der Kurse wird angezeigt (ohne Namensnennung)
-- **Mehrfach-Einwahl-Schutz**: Verhindert mehrmalige Einwahlen derselben Person
+- ✅ **Intuitive Einwahl**: Schüler können sich mit Vor-/Nachname, Klasse und optionaler E-Mail einwählen
+- ✅ **Intelligente Kursauswahl**: Schwerpunkt 2 wird automatisch basierend auf Schwerpunkt 1 und Kombinationsregeln gefiltert
+- ✅ **Echtzeit-Kapazitätsanzeige**: Aktuelle Kursbelegung wird live angezeigt (ohne Namenslisten)
+- ✅ **Mehrfach-Einwahl-Schutz**: Verhindert doppelte Einwahlen derselben Person
+- ✅ **Responsive Design**: Funktioniert perfekt auf Desktop, Tablet und Smartphone
+- ✅ **Konfigurierbarer Hinweistext**: Admin kann Informationen für Schüler anpassen
 
-### Admin-Interface
+### **Admin-Interface**
 
-- **Dashboard mit Statistiken**: Übersicht über alle Einwahlen und Kursbelegungen
-- **Flexible Kurskonfiguration**: Schwerpunkte und deren Kombinationen können dynamisch angepasst werden
-- **Klassenverwaltung**: Klassenbezeichnungen können frei konfiguriert werden
-- **Ein-/Ausschalten der Einwahl**: Einwahl kann jederzeit geöffnet oder geschlossen werden
-- **CSV-Export**: Alle Einwahlen können als Excel-kompatible CSV-Datei exportiert werden
+- ✅ **Modernes Tab-Dashboard**: Übersichtliche Aufteilung in Übersicht, Schüler-Verwaltung, Konfiguration und Account
+- ✅ **Live-Statistiken**: Echtzeit-Übersicht über Kursbelegungen mit visuellen Fortschrittsbalken
+- ✅ **Einwahl-Steuerung**: Ein-/Ausschalten der Schülereinwahl mit einem Klick
+- ✅ **Schüler-Verwaltung**: Vollständige Übersicht aller Einwahlen mit Suchfunktion
+- ✅ **Einzellöschung**: Gezieltes Löschen einzelner Schülereinwahlen
+- ✅ **System-Reset**: Sicheres Löschen aller Einwahlen mit Bestätigungsschutz
+- ✅ **CSV-Export**: Excel-kompatible Datenexporte mit korrekter Zeichenkodierung
+- ✅ **Passwort-Management**: Sichere Passwort-Änderung mit Stärke-Anzeige
 
-### Technische Features
+### **Flexible Konfiguration**
 
-- **Docker-basierte Bereitstellung**: Einfache Installation und Wartung
-- **Concurrent-Access**: Mehrere Schüler können gleichzeitig einwählen
-- **Responsive Design**: Funktioniert auf Desktop und mobilen Geräten
-- **Sichere Admin-Authentifizierung**: Passwort-geschützter Admin-Bereich
+- ✅ **Dynamische Schwerpunkte**: Kurse und deren Kombinationen können zur Laufzeit angepasst werden
+- ✅ **Variable Kapazitäten**: Maximale Teilnehmerzahl pro Kurs individuell einstellbar
+- ✅ **Klassenmanagement**: Klassenbezeichnungen frei konfigurierbar
+- ✅ **Hinweistext-Editor**: Individuelle Informationen für Schüler mit Formatierungsoptionen
 
-## Installation
+### **Technische Excellence**
+
+- ✅ **Docker-Deployment**: Containerisierte Bereitstellung für einfache Installation
+- ✅ **Concurrent Access**: Mehrere Benutzer können gleichzeitig ohne Konflikte arbeiten
+- ✅ **MVC-Architektur**: Saubere Trennung von Controller, View und Model
+- ✅ **Sichere Authentifizierung**: Bcrypt-Passwort-Hashing und Session-Management
+- ✅ **AJAX-Updates**: Live-Statistiken ohne Seitenneuladen
+
+## 📋 Schwerpunkt-Kombinationsregeln
+
+Das System unterstützt verschiedene Kombinationslogiken:
+
+1. **Freie Kombination**: Informationstechnik, Kraftfahrzeugtechnik und Handel können beliebig miteinander kombiniert werden
+2. **Pflicht-Kombinationen**: Bestimmte Schwerpunkte können nur zusammen gewählt werden:
+   - Metall ↔ Elektro (nur in Kombination)
+   - Verwaltung ↔ Ernährung (nur in Kombination)
+3. **Kapazitätsprüfung**: Automatische Überprüfung der verfügbaren Plätze
+4. **Duplikatschutz**: Verhindert die Wahl desselben Schwerpunkts als Schwerpunkt 1 und 2
+
+## 🐳 Installation & Deployment
 
 ### Voraussetzungen
 
-- Docker
-- Docker Compose
+- Docker & Docker Compose
+- Mindestens 2GB RAM
+- Port 80 und 3306 verfügbar
 
-### Setup
+### Schnellstart
 
-1. **Repository klonen oder Dateien erstellen**:
+1. **Repository Setup**:
 
    ```bash
-   mkdir buea-einwahl
-   cd buea-einwahl
+   mkdir buea-einwahl && cd buea-einwahl
    ```
 
-2. **Ordnerstruktur erstellen**:
+2. **Verzeichnisstruktur erstellen**:
 
    ```
    buea-einwahl/
    ├── docker-compose.yml
    ├── webapp/
+   │   ├── .htaccess
    │   ├── index.php
    │   ├── includes/
    │   │   ├── Database.php
    │   │   └── EinwahlModel.php
-   │   └── admin/
-   │       └── index.php
+   │   ├── admin/
+   │   │   ├── index.php
+   │   │   ├── login.php
+   │   │   ├── dashboard.php
+   │   │   └── ajax/
+   │   │       └── statistics.php
+   │   └── assets/
+   │       ├── css/
+   │       │   ├── main.css
+   │       │   └── admin.css
+   │       └── js/
+   │           ├── einwahl.js
+   │           └── admin.js
    ├── sql/
    │   └── init.sql
    └── php-config/
        └── php.ini
    ```
 
-3. **Docker Container starten**:
+3. **Container starten**:
 
    ```bash
    docker-compose up -d
    ```
 
-4. **Erste Einrichtung**:
-   - Webapp ist unter `http://localhost` erreichbar
-   - Admin-Bereich: `http://localhost/admin/`
-   - Standard-Login: `admin` / `admin123`
+4. **Zugriff**:
+   - **Schüler-Interface**: `http://localhost`
+   - **Admin-Dashboard**: `http://localhost/admin/`
+   - **Login**: `admin` / `admin123`
 
-## Konfiguration
+### Produktions-Deployment
+
+Für den Produktionseinsatz empfiehlt sich:
+
+1. **Sichere Passwörter**: Alle Standard-Credentials in `docker-compose.yml` ändern
+2. **Reverse Proxy**: Nginx/Apache mit SSL/TLS vor die Container schalten
+3. **Backup-Strategie**: Automatisierte Datenbank-Backups einrichten
+4. **Monitoring**: Log-Aggregation und Health-Checks implementieren
+
+## ⚙️ Konfiguration
 
 ### Schwerpunkt-Konfiguration
 
-Im Admin-Bereich können Schwerpunkte über ein Textfeld konfiguriert werden. Format pro Zeile:
+Im Admin-Dashboard können Schwerpunkte über ein Textfeld konfiguriert werden:
 
-**Einzelne Schwerpunkte:**
+**Format pro Zeile:**
+
+```
+maximale_teilnehmer,Schwerpunkt-Name
+```
+
+**Beispiele:**
 
 ```
 10,Kraftfahrzeugtechnik
-10,Informationstechnik
-10,Handel
-```
-
-**Pflicht-Kombinationen:**
-
-```
+12,Informationstechnik
+15,Handel
 12,Metall;Elektrotechnik
-12,Verwaltung;Ernährung
+10,Verwaltung;Ernährung
 ```
 
-- Zahl vor dem Komma = maximale Teilnehmerzahl
-- Semikolon trennt Kombinationspartner
-- Eine Konfiguration pro Zeile
+**Erklärung:**
+
+- `10,Kraftfahrzeugtechnik` = Einzelkurs mit 10 Plätzen
+- `12,Metall;Elektrotechnik` = Pflicht-Kombination mit je 12 Plätzen
 
 ### Klassen-Konfiguration
 
-Klassenbezeichnungen werden zeilenweise eingegeben:
+Eine Klassenbezeichnung pro Zeile:
 
 ```
 BüA-1A
 BüA-1B
-BüA-1C
 BüA-2A
+BüA-2B
 ```
 
-### Standard-Einstellungen
+### Hinweistext-Konfiguration
 
-Die Anwendung wird mit folgenden Standard-Schwerpunkten ausgeliefert:
+Formatierungsoptionen für Schüler-Hinweise:
 
-- Kraftfahrzeugtechnik (10 Plätze)
-- Informationstechnik (10 Plätze)
-- Metall + Elektro (je 10 Plätze, nur in Kombination)
-- Handel (10 Plätze)
-- Verwaltung + Ernährung (je 10 Plätze, nur in Kombination)
+```
+• Erster wichtiger Hinweis
+• Zweiter Hinweis mit **fetter Schrift**
 
-Standard-Klassen: BüA-1A bis BüA-1D
+Weitere Informationen in neuen Absätzen...
+```
 
-## Kombinationsregeln
-
-Das System unterstützt verschiedene Kombinationsregeln:
-
-1. **Freie Kombination**: Informationstechnik, Kraftfahrzeugtechnik und Handel können beliebig kombiniert werden
-2. **Pflicht-Kombinationen**: Bestimmte Schwerpunkte können nur zusammen gewählt werden (z.B. Metall + Elektro)
-3. **Ausschluss**: Gleiche Schwerpunkte können nicht als Erst- und Zweitwunsch gewählt werden
-
-## Datenbank-Schema
+## 🗄️ Datenbank-Schema
 
 ### Haupttabellen
 
-- `schwerpunkte`: Verfügbare Schwerpunktkurse mit Kapazitäten und Kombinationsregeln
-- `klassen`: Verfügbare Klassenbezeichnungen
-- `einwahlen`: Schülereinwahlen mit Erst- und Zweitwunsch
-- `admin_users`: Admin-Benutzer für Backend-Zugang
-- `konfiguration`: Systemkonfiguration
+- **`schwerpunkte`**: Verfügbare Kurse mit Kapazitäten und Kombinationsregeln
+- **`klassen`**: Konfigurierbare Klassenbezeichnungen
+- **`einwahlen`**: Schülereinwahlen mit Audit-Trail (IP, User-Agent, Timestamp)
+- **`admin_users`**: Admin-Benutzer mit sicherer Passwort-Speicherung
+- **`konfiguration`**: Flexible Systemeinstellungen (Hinweistext, Einwahl-Status, etc.)
 
-## Sicherheit
+### Datenintegrität
 
-- **Admin-Authentifizierung**: Passwort-geschützter Admin-Bereich
-- **SQL-Injection-Schutz**: Prepared Statements
-- **Session-Management**: Sichere Session-Verwaltung
-- **Input-Validierung**: Alle Eingaben werden validiert und sanitized
+- **Foreign Keys**: Referentielle Integrität zwischen allen Tabellen
+- **Unique Constraints**: Verhindert Doppel-Einwahlen pro Schüler
+- **Audit Trail**: Vollständige Nachverfolgbarkeit aller Aktionen
 
-## CSV-Export
+## 📊 CSV-Export
 
-Der CSV-Export enthält folgende Spalten:
+Der Export enthält alle relevanten Daten:
 
-- Vorname
-- Nachname
-- Klasse
-- E-Mail
-- Erstwunsch
-- Zweitwunsch
+- Vorname, Nachname, Klasse
+- E-Mail-Adresse (falls angegeben)
+- Schwerpunkt 1 und Schwerpunkt 2
 - Einwahl-Zeitpunkt
 
-Die Datei ist Excel-kompatibel (UTF-8 BOM, Semikolon-getrennt).
+**Features:**
 
-## Wartung
+- Excel-kompatibel (UTF-8 BOM, Semikolon-Trennzeichen)
+- Automatische Dateinamen mit Timestamp
+- Vollständige Datenexportierung
 
-### Logs einsehen
+## 🔧 Administration
+
+### Schüler-Verwaltung
+
+- **Live-Suche**: Sofortiges Filtern nach Namen, Klassen oder Kursen
+- **Sortierbare Tabellen**: Klick auf Spaltenheader zum Sortieren
+- **Schnell-Aktionen**: Ein-Klick-Löschung mit Sicherheitsabfrage
+- **Batch-Operationen**: Alle Einwahlen auf einmal zurücksetzen
+
+### System-Verwaltung
+
+- **Einwahl-Toggle**: Schnelles Ein-/Ausschalten der Schülerregistrierung
+- **Live-Statistiken**: Auto-refresh alle 30 Sekunden
+- **Konfigurations-Validierung**: Syntax-Prüfung bei Eingaben
+- **Passwort-Sicherheit**: Stärke-Indikator und sichere Hash-Algorithmen
+
+## 🔒 Sicherheit
+
+### Authentifizierung & Autorisierung
+
+- **Session-basierte Authentifizierung** mit sicheren Cookies
+- **Bcrypt-Passwort-Hashing** mit Salt
+- **CSRF-Schutz** durch Session-Tokens
+- **Input-Sanitization** gegen XSS und SQL-Injection
+
+### Daten-Schutz
+
+- **Prepared Statements** für alle Datenbankzugriffe
+- **IP-Logging** für Audit-Trails
+- **Sichere Headers** (.htaccess Konfiguration)
+- **Minimale Berechtigungen** für Docker-Container
+
+## 🚨 Troubleshooting
+
+### Häufige Probleme
+
+**Container starten nicht:**
 
 ```bash
+# Ports prüfen
+netstat -tulpn | grep :80
+netstat -tulpn | grep :3306
+
+# Logs einsehen
 docker-compose logs web
 docker-compose logs db
 ```
 
-### Datenbank-Backup
+**Datenbank-Verbindung fehlgeschlagen:**
 
 ```bash
-docker exec buea_db mysqldump -u buea_user -p buea_einwahl > backup.sql
+# Container-Status prüfen
+docker-compose ps
+
+# Datenbank-Logs
+docker-compose logs db
+
+# Container neu starten
+docker-compose restart db
 ```
 
-### Updates
+**Admin-Login funktioniert nicht:**
 
 ```bash
-docker-compose down
-docker-compose pull
-docker-compose up -d
+# In Container einloggen und Passwort zurücksetzen
+docker-compose exec db mysql -u buea_user -p buea_einwahl
+
+# Neuen Hash generieren (PHP)
+docker-compose exec web php -r "echo password_hash('admin123', PASSWORD_DEFAULT);"
 ```
 
-## Produktions-Deployment
+**Einwahl-Validierung schlägt fehl:**
 
-Für den Produktionseinsatz sollten folgende Punkte beachtet werden:
+- Browser-Cache leeren (Strg+F5)
+- JavaScript-Konsole auf Fehler prüfen
+- Schwerpunkt-Konfiguration validieren
 
-1. **Passwörter ändern**: Alle Standard-Passwörter in der docker-compose.yml ändern
-2. **Reverse Proxy**: Nginx oder Apache als Reverse Proxy mit SSL/TLS
-3. **Backup-Strategie**: Regelmäßige Datenbank-Backups einrichten
-4. **Monitoring**: Log-Monitoring und Health-Checks implementieren
-5. **Resource-Limits**: Docker Container-Ressourcen begrenzen
+### Performance-Optimierung
 
-### Beispiel Reverse Proxy (Nginx)
+**Für größere Installationen:**
 
-```nginx
-server {
-    listen 443 ssl;
-    server_name ihre-domain.de;
+- Datenbankindizes für häufige Abfragen
+- PHP OpCache aktivieren
+- Nginx als Reverse Proxy mit Caching
+- Container-Ressourcen entsprechend skalieren
 
-    ssl_certificate /path/to/cert.pem;
-    ssl_certificate_key /path/to/key.pem;
+## 🎯 Roadmap & Erweiterungen
 
-    location / {
-        proxy_pass http://localhost:80;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
+### Geplante Features
 
-## Troubleshooting
+- **E-Mail-Benachrichtigungen** bei erfolgreicher Einwahl
+- **Wartelisten-Funktionalität** für überfüllte Kurse
+- **Bulk-Import** von Schülerdaten via CSV
+- **Erweiterte Reporting-Funktionen** mit Grafiken
+- **Multi-Tenancy** für mehrere Schulen
+- **API-Endpoints** für Dritt-System-Integration
 
-### Häufige Probleme
+### Anpassungsmöglichkeiten
 
-1. **Container startet nicht**:
+- **Theming**: CSS-Variablen für Corporate Design
+- **Mehrsprachigkeit**: Vorbereitete Lokalisierung
+- **Custom Fields**: Erweiterbare Schülerdaten
+- **Workflow-Engine**: Konfigurierbare Genehmigungsprozesse
 
-   - Ports 80 und 3306 bereits belegt prüfen
-   - Docker und Docker Compose Version prüfen
+## 📄 Lizenz
 
-2. **Datenbank-Verbindung fehlgeschlagen**:
+Diese Anwendung wurde speziell für Bildungseinrichtungen entwickelt und kann frei verwendet, angepasst und weiterentwickelt werden. Der Quellcode steht unter einer offenen Lizenz zur Verfügung.
 
-   - Container-Status prüfen: `docker-compose ps`
-   - Logs einsehen: `docker-compose logs db`
+## 🤝 Support & Community
 
-3. **Admin-Login funktioniert nicht**:
+Bei Fragen, Problemen oder Verbesserungsvorschlägen:
 
-   - Standard-Passwort: `admin123`
-   - Datenbank-Initialisierung prüfen
+1. **Dokumentation prüfen**: Alle wichtigen Informationen sind hier dokumentiert
+2. **Logs analysieren**: `docker-compose logs` gibt meist Aufschluss über Probleme
+3. **Issues erstellen**: Detaillierte Problembeschreibung mit System-Informationen
+4. **Community beitragen**: Pull Requests für Verbesserungen sind willkommen
 
-4. **Einwahl-Validierung schlägt fehl**:
-   - JavaScript-Fehler in Browser-Konsole prüfen
-   - Schwerpunkt-Konfiguration validieren
+---
 
-## Support
-
-Bei Problemen oder Fragen zur Anwendung:
-
-1. Logs überprüfen
-2. Datenbank-Konsistenz prüfen
-3. Browser-Cache leeren
-4. Konfiguration validieren
-
-## Lizenz
-
-Diese Anwendung wurde für Bildungseinrichtungen entwickelt und kann frei verwendet und angepasst werden.
+**Entwickelt mit ❤️ für moderne Bildungseinrichtungen**
