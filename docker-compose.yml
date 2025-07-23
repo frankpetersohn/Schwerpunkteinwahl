@@ -12,10 +12,10 @@ services:
     depends_on:
       - db
     environment:
-      - DB_HOST=db
-      - DB_NAME=buea_einwahl
-      - DB_USER=buea_user
-      - DB_PASS=buea_password
+      DB_HOST: db
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
     command: >
       bash -c "
       docker-php-ext-install pdo pdo_mysql mysqli &&
@@ -27,15 +27,33 @@ services:
     image: mariadb:10.11
     container_name: buea_db
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: buea_einwahl
-      MYSQL_USER: buea_user
-      MYSQL_PASSWORD: buea_password
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
+
+ # PHPMyAdmin (nur für Development/Admin)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2
+    container_name: buea_phpmyadmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USER}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    profiles:
+      - admin  # Nur starten mit: docker-compose --profile admin up
+
 
 volumes:
   db_data:
