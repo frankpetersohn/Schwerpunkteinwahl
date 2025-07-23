@@ -55,6 +55,11 @@ if ($_POST) {
                     $message = 'Klassen wurden übernommen.';
                     break;
 
+                case 'update_hinweistext':
+                    $model->setKonfiguration('hinweistext', $_POST['hinweistext']);
+                    $message = 'Hinweistext wurde aktualisiert.';
+                    break;
+
                 case 'csv_export':
                     // CSV-Export
                     $einwahlen = $model->getAlleEinwahlen();
@@ -152,6 +157,7 @@ $einwahlen = $model->getAlleEinwahlen();
 $schwerpunkte = $model->getSchwerpunkte();
 $schwerpunkte_config = $model->getKonfiguration('schwerpunkte_config');
 $klassen_config = $model->getKonfiguration('klassen_config');
+$hinweistext = $model->getKonfiguration('hinweistext');
 
 // Statistiken berechnen
 $statistiken = [];

@@ -288,6 +288,7 @@ body.dashboard-page {
     padding: 0.75rem 0;
     border-bottom: 1px solid #e9ecef;
     transition: background-color 0.2s ease;
+    gap: 1rem;
 }
 
 .stats-item:last-child {
@@ -304,12 +305,17 @@ body.dashboard-page {
 .stats-item-name {
     font-weight: 500;
     color: #495057;
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .stats-item-data {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .stats-count {

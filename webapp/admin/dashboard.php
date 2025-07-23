@@ -117,6 +117,28 @@
 
         <!-- Konfiguration -->
         <div class="card" style="margin-bottom: 2rem;">
+            <h3>Hinweistext-Konfiguration</h3>
+            <div class="config-help">
+                <h4>Anleitung:</h4>
+                <p>Dieser Text wird über dem Einwahlformular angezeigt. Verwenden Sie:</p>
+                <ul>
+                    <li><code>• Text</code> für Aufzählungspunkte</li>
+                    <li>Zeilenumbrüche für neue Absätze</li>
+                    <li><strong>**Text**</strong> wird automatisch fett dargestellt</li>
+                </ul>
+            </div>
+
+            <form method="post">
+                <input type="hidden" name="action" value="update_hinweistext">
+                <div class="form-group">
+                    <label for="hinweistext">Hinweistext für Schüler:</label>
+                    <textarea id="hinweistext" name="hinweistext" style="min-height: 120px;" placeholder="• Erster Hinweis&#10;• Zweiter Hinweis&#10;&#10;Weitere Informationen..."><?= htmlspecialchars($hinweistext) ?></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Hinweistext übernehmen</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-bottom: 2rem;">
             <h3>Klassen-Konfiguration</h3>
             <div class="config-help">
                 <h4>Anleitung:</h4>

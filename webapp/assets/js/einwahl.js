@@ -91,7 +91,7 @@ class EinwahlManager {
             this.zweitwunschSelect.appendChild(option);
             
             this.updateSelectInfo(this.zweitwunschSelect, 
-                'Für diesen Erstwunsch sind keine weiteren Kurse verfügbar.', 'error');
+                'Für diesen ersten Schwerpunkt sind keine weiteren Kurse verfügbar.', 'error');
         } else {
             this.updateSelectInfo(this.zweitwunschSelect, 
                 `${verfügbareOptionen} kombinierbare${verfügbareOptionen === 1 ? 'r' : ''} Kurs${verfügbareOptionen === 1 ? '' : 'e'} verfügbar.`);
@@ -155,7 +155,7 @@ class EinwahlManager {
         
         if (erstwunsch_id === zweitwunsch_id) {
             event.preventDefault();
-            this.showValidationError('Erst- und Zweitwunsch müssen unterschiedlich sein.');
+            this.showValidationError('Die beiden Schwerpunkte müssen unterschiedlich sein.');
             return;
         }
         
@@ -175,13 +175,13 @@ class EinwahlManager {
         
         if (erstwunschAktuell >= erstwunsch.max_teilnehmer) {
             event.preventDefault();
-            this.showValidationError('Der Erstwunsch-Kurs ist bereits voll.');
+            this.showValidationError('Der erste Schwerpunkt-Kurs ist bereits voll.');
             return;
         }
         
         if (zweitwunschAktuell >= zweitwunsch.max_teilnehmer) {
             event.preventDefault();
-            this.showValidationError('Der Zweitwunsch-Kurs ist bereits voll.');
+            this.showValidationError('Der zweite Schwerpunkt-Kurs ist bereits voll.');
             return;
         }
         

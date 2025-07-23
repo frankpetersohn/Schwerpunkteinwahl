@@ -84,7 +84,7 @@ INSERT INTO
     admin_users (username, password_hash)
 VALUES (
         'admin',
-        '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+        '$2y$10$e0MYzXyjpJS7Pd0RVvHwHe6noIllL9DFMgXJGnU.SueFmkE4NQVqC'
     );
 
 -- Konfiguration für einwahl_offen
@@ -108,4 +108,9 @@ VALUES (
         'klassen_config',
         'BüA-1A\nBüA-1B\nBüA-1C\nBüA-1D',
         'Liste der verfügbaren Klassen, eine pro Zeile'
+    ),
+    (
+        'hinweistext',
+        'Wichtige Hinweise zur Kurswahl:\n• Metall und Elektro können nur in Kombination gewählt werden\n• Verwaltung und Ernährung können nur in Kombination gewählt werden\n• Informationstechnik, Kraftfahrzeugtechnik und Handel können frei kombiniert werden\n• Sie müssen zwei verschiedene Schwerpunkte wählen',
+        'Hinweistext der über dem Einwahlformular angezeigt wird'
     );

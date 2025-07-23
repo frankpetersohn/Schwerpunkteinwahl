@@ -33,6 +33,7 @@ if ($_POST && isset($_POST['action']) && $_POST['action'] === 'einwahl') {
 $schwerpunkte = $model->getSchwerpunkte();
 $klassen = $model->getKlassen();
 $einwahl_offen = $model->istEinwahlOffen();
+$hinweistext = $model->getKonfiguration('hinweistext');
 
 // Teilnehmeranzahl für jeden Schwerpunkt ermitteln
 $teilnehmer_anzahl = [];
@@ -73,15 +74,23 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                 <p>Bitte wenden Sie sich an Ihre Lehrkraft.</p>
             </div>
         <?php else: ?>
-            <div class="combination-info">
-                <h3>Wichtige Hinweise zur Kurswahl:</h3>
-                <ul>
-                    <li><strong>Metall und Elektro</strong> können nur in Kombination gewählt werden</li>
-                    <li><strong>Verwaltung und Ernährung</strong> können nur in Kombination gewählt werden</li>
-                    <li><strong>Informationstechnik, Kraftfahrzeugtechnik und Handel</strong> können frei kombiniert werden</li>
-                    <li>Sie müssen <strong>zwei verschiedene Schwerpunkte</strong> wählen</li>
-                </ul>
-            </div>
+            <?php if ($hinweistext): ?>
+                <div class="combination-info">
+                    <h3>Hinweise zur Kurswahl:</h3>
+                    <?php
+                    // Hinweistext formatieren - Zeilenumbrüche und Bullet Points
+                    $formatted_text = nl2br(htmlspecialchars($hinweistext));
+                    $formatted_text = preg_replace('/^•\s*/m', '<li>', $formatted_text);
+                    $formatted_text = preg_replace('/(<li>.*?)(<br \/>|$)/s', '$1</li>', $formatted_text);
+
+                    if (strpos($formatted_text, '<li>') !== false) {
+                        echo '<ul>' . $formatted_text . '</ul>';
+                    } else {
+                        echo '<p>' . $formatted_text . '</p>';
+                    }
+                    ?>
+                </div>
+            <?php endif; ?>
 
             <form method="post" id="einwahlForm">
                 <input type="hidden" name="action" value="einwahl">
@@ -112,7 +121,7 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                 </div>
 
                 <div class="form-group">
-                    <label for="erstwunsch_id">Erstwunsch <span class="required">*</span></label>
+                    <label for="erstwunsch_id">Schwerpunkt 1 <span class="required">*</span></label>
                     <select id="erstwunsch_id" name="erstwunsch_id" required>
                         <option value="">Bitte wählen...</option>
                         <?php foreach ($schwerpunkte as $sp): ?>
@@ -127,17 +136,17 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                         <?php endforeach; ?>
                     </select>
                     <div class="course-info">
-                        Wählen Sie Ihren Wunsch-Schwerpunkt. Rote Kurse sind bereits voll.
+                        Wählen Sie Ihren ersten Schwerpunkt. Rote Kurse sind bereits voll.
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="zweitwunsch_id">Zweitwunsch <span class="required">*</span></label>
+                    <label for="zweitwunsch_id">Schwerpunkt 2 <span class="required">*</span></label>
                     <select id="zweitwunsch_id" name="zweitwunsch_id" required disabled>
-                        <option value="">Erst Erstwunsch wählen...</option>
+                        <option value="">Erst Schwerpunkt 1 wählen...</option>
                     </select>
                     <div class="course-info">
-                        Wird automatisch basierend auf Ihrem Erstwunsch gefiltert.
+                        Wird automatisch basierend auf Ihrem ersten Schwerpunkt gefiltert.
                     </div>
                 </div>
 
