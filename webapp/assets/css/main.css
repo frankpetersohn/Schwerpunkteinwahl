@@ -1,0 +1,334 @@
+/* BüA Einwahl - Hauptstyles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.6;
+}
+
+.container {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 1rem;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+h2 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+input:invalid {
+    border-color: #e74c3c;
+}
+
+select:disabled {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+option:disabled {
+    color: #dc3545;
+    font-style: italic;
+}
+
+/* Course Info */
+.course-info {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.course-full {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.course-available {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+/* Button Styles */
+button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Message Styles */
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Combination Info Box */
+.combination-info {
+    background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.combination-info h3 {
+    margin-bottom: 1rem;
+    color: #34495e;
+    font-size: 1.1rem;
+}
+
+.combination-info ul {
+    margin-left: 1.2rem;
+    color: #2c3e50;
+}
+
+.combination-info li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.combination-info strong {
+    color: #667eea;
+}
+
+/* Closed Notice */
+.closed-notice {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #e74c3c;
+    background: #fff5f5;
+    border-radius: 10px;
+    border: 2px solid #fed7d7;
+}
+
+.closed-notice h2 {
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.closed-notice p {
+    font-size: 1.1rem;
+    color: #742a2a;
+}
+
+/* Admin Link */
+.admin-link {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.admin-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.admin-link a:hover {
+    color: #5a6fd8;
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+        align-items: flex-start;
+        padding-top: 2rem;
+    }
+    
+    .container {
+        padding: 1.5rem;
+        margin: 0;
+        border-radius: 10px;
+    }
+    
+    h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .combination-info {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+    
+    input, select {
+        padding: 0.65rem;
+        font-size: 0.95rem;
+    }
+    
+    button {
+        padding: 0.85rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.4rem;
+    }
+    
+    .combination-info {
+        padding: 0.8rem;
+    }
+    
+    .combination-info ul {
+        margin-left: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading State */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading button {
+    background: #ccc;
+    cursor: wait;
+}
+
+/* Focus Styles for Accessibility */
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .container {
+        box-shadow: none;
+        border-radius: 0;
+    }
+    
+    .admin-link {
+        display: none;
+    }
+    
+    button {
+        display: none;
+    }
+}
