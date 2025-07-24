@@ -173,6 +173,11 @@ if ($_POST) {
 
                     $message = "Einwahl von {$einwahl['vorname']} {$einwahl['nachname']} wurde gelöscht.";
                     break;
+
+                case 'update_ueberschrift':
+                    $model->setKonfiguration('form_ueberschrift', $_POST['form_ueberschrift']);
+                    $message = 'Überschrift wurde aktualisiert.';
+                    break;
             }
         }
     } catch (Exception $e) {
@@ -193,6 +198,7 @@ $schwerpunkte = $model->getSchwerpunkte();
 $schwerpunkte_config = $model->getKonfiguration('schwerpunkte_config');
 $klassen_config = $model->getKonfiguration('klassen_config');
 $hinweistext = $model->getKonfiguration('hinweistext');
+$form_ueberschrift = $model->getKonfiguration('form_ueberschrift');
 
 // Statistiken berechnen
 $statistiken = [];

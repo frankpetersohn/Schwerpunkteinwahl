@@ -189,6 +189,28 @@
         <!-- Tab: Konfiguration -->
         <div class="tab-content" id="tab-config">
             <div class="config-grid">
+                <!-- Überschrift-->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Formular-Überschrift</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="config-help">
+                            <p>Diese Überschrift wird im Einwahlformular für Schüler angezeigt.</p>
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" name="action" value="update_ueberschrift">
+                            <div class="form-group">
+                                <label for="form_ueberschrift">Überschrift:</label>
+                                <input type="text" id="form_ueberschrift" name="form_ueberschrift"
+                                    value="<?= htmlspecialchars($form_ueberschrift) ?>"
+                                    placeholder="BüA Schwerpunkt-Einwahl">
+                            </div>
+                            <button type="submit" class="btn btn-success">Speichern</button>
+                        </form>
+                    </div>
+                </div>
                 <!-- Hinweistext -->
                 <div class="card">
                     <div class="card-header">

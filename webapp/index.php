@@ -34,6 +34,7 @@ $schwerpunkte = $model->getSchwerpunkte();
 $klassen = $model->getKlassen();
 $einwahl_offen = $model->istEinwahlOffen();
 $hinweistext = $model->getKonfiguration('hinweistext');
+$form_ueberschrift = $model->getKonfiguration('form_ueberschrift') ?: 'BüA Schwerpunkt-Einwahl';
 
 // Teilnehmeranzahl für jeden Schwerpunkt ermitteln
 $teilnehmer_anzahl = [];
@@ -58,7 +59,7 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
 
 <body>
     <div class="container">
-        <h1>BüA Schwerpunkt-Einwahl</h1>
+        <h1><?= htmlspecialchars($form_ueberschrift) ?></h1>
 
         <?php if ($message): ?>
             <div class="message success"><?= htmlspecialchars($message) ?></div>

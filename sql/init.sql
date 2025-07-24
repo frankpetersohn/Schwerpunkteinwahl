@@ -113,4 +113,9 @@ VALUES (
         'hinweistext',
         'Wichtige Hinweise zur Kurswahl:\n• Metall und Elektro können nur in Kombination gewählt werden\n• Verwaltung und Ernährung können nur in Kombination gewählt werden\n• Informationstechnik, Kraftfahrzeugtechnik und Handel können frei kombiniert werden\n• Sie müssen zwei verschiedene Schwerpunkte wählen',
         'Hinweistext der über dem Einwahlformular angezeigt wird'
+    ),
+    (
+        'form_ueberschrift',
+        'BüA Schwerpunkt-Einwahl',
+        'Überschrift des Einwahlformulars'
     );
