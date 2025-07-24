@@ -54,6 +54,5 @@ services:
     profiles:
       - admin  # Nur starten mit: docker-compose --profile admin up
 
-
 volumes:
   db_data:

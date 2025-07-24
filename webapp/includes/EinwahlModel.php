@@ -90,34 +90,90 @@ class EinwahlModel
             throw new Exception("Dieser Schüler ist bereits eingewählt.");
         }
 
-        if (!$this->kannEinwählen($daten['erstwunsch_id'])) {
-            throw new Exception("Der Erstwunsch-Kurs ist bereits voll.");
+        // RACE CONDITION SCHUTZ: Database Transaction mit Lock
+        $this->db->getPDO()->beginTransaction();
+
+        try {
+            // 1. Schwerpunkte mit Row-Level Lock laden
+            $erstwunsch = $this->db->fetchOne(
+                "SELECT * FROM schwerpunkte WHERE id = ? FOR UPDATE",
+                [$daten['erstwunsch_id']]
+            );
+
+            $zweitwunsch = null;
+            if ($daten['zweitwunsch_id']) {
+                $zweitwunsch = $this->db->fetchOne(
+                    "SELECT * FROM schwerpunkte WHERE id = ? FOR UPDATE",
+                    [$daten['zweitwunsch_id']]
+                );
+            }
+
+            if (!$erstwunsch) {
+                throw new Exception("Erstwunsch-Schwerpunkt nicht gefunden.");
+            }
+
+            if ($daten['zweitwunsch_id'] && !$zweitwunsch) {
+                throw new Exception("Zweitwunsch-Schwerpunkt nicht gefunden.");
+            }
+
+            // 2. Aktuelle Teilnehmerzahl LIVE aus DB ermitteln (mit Lock)
+            $aktuelle_anzahl_erst = $this->db->fetchOne(
+                "SELECT COUNT(*) as anzahl FROM einwahlen 
+                 WHERE (erstwunsch_id = ? OR zweitwunsch_id = ?) FOR UPDATE",
+                [$daten['erstwunsch_id'], $daten['erstwunsch_id']]
+            )['anzahl'];
+
+            $aktuelle_anzahl_zweit = 0;
+            if ($daten['zweitwunsch_id']) {
+                $aktuelle_anzahl_zweit = $this->db->fetchOne(
+                    "SELECT COUNT(*) as anzahl FROM einwahlen 
+                     WHERE (erstwunsch_id = ? OR zweitwunsch_id = ?) FOR UPDATE",
+                    [$daten['zweitwunsch_id'], $daten['zweitwunsch_id']]
+                )['anzahl'];
+            }
+
+            // 3. Kapazitätsprüfung mit aktuellen Werten
+            if ($aktuelle_anzahl_erst >= $erstwunsch['max_teilnehmer']) {
+                throw new Exception("Der erste Schwerpunkt ist bereits voll. Versuchen Sie es mit einem anderen Kurs.");
+            }
+
+            if ($daten['zweitwunsch_id'] && $aktuelle_anzahl_zweit >= $zweitwunsch['max_teilnehmer']) {
+                throw new Exception("Der zweite Schwerpunkt ist bereits voll. Versuchen Sie es mit einem anderen Kurs.");
+            }
+
+            // 4. Kombinierbarkeit prüfen
+            if ($daten['zweitwunsch_id'] && !$this->sindKombinierbar($daten['erstwunsch_id'], $daten['zweitwunsch_id'])) {
+                throw new Exception("Diese Schwerpunkt-Kombination ist nicht erlaubt.");
+            }
+
+            // 5. Doppel-Einwahl prüfen (nochmal, da sich zwischenzeitlich was geändert haben könnte)
+            if ($this->studentExistiert($daten['vorname'], $daten['nachname'], $daten['klasse_id'])) {
+                throw new Exception("Sie haben sich bereits eingewählt. Mehrfach-Einwahlen sind nicht erlaubt.");
+            }
+
+            // 6. Einwahl speichern
+            $sql = "INSERT INTO einwahlen (vorname, nachname, klasse_id, email, erstwunsch_id, zweitwunsch_id, ip_address, user_agent) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $this->db->query($sql, [
+                $daten['vorname'],
+                $daten['nachname'],
+                $daten['klasse_id'],
+                $daten['email'] ?: null,
+                $daten['erstwunsch_id'],
+                $daten['zweitwunsch_id'] ?: null,
+                $_SERVER['REMOTE_ADDR'] ?? '',
+                $_SERVER['HTTP_USER_AGENT'] ?? ''
+            ]);
+
+            // 7. Transaction erfolgreich abschließen
+            $this->db->getPDO()->commit();
+            return true;
+        } catch (Exception $e) {
+            // Bei Fehler: Rollback
+            $this->db->getPDO()->rollback();
+            throw $e;
         }
-
-        if ($daten['zweitwunsch_id'] && !$this->kannEinwählen($daten['zweitwunsch_id'])) {
-            throw new Exception("Der Zweitwunsch-Kurs ist bereits voll.");
-        }
-
-        if ($daten['zweitwunsch_id'] && !$this->sindKombinierbar($daten['erstwunsch_id'], $daten['zweitwunsch_id'])) {
-            throw new Exception("Diese Schwerpunkt-Kombination ist nicht erlaubt.");
-        }
-
-        // Einwahl speichern
-        $sql = "INSERT INTO einwahlen (vorname, nachname, klasse_id, email, erstwunsch_id, zweitwunsch_id, ip_address, user_agent) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        $this->db->query($sql, [
-            $daten['vorname'],
-            $daten['nachname'],
-            $daten['klasse_id'],
-            $daten['email'] ?: null,
-            $daten['erstwunsch_id'],
-            $daten['zweitwunsch_id'] ?: null,
-            $_SERVER['REMOTE_ADDR'] ?? '',
-            $_SERVER['HTTP_USER_AGENT'] ?? ''
-        ]);
-
-        return true;
     }
 
     public function getAlleEinwahlen()
