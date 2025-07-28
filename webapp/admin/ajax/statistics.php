@@ -27,7 +27,7 @@ try {
     foreach ($schwerpunkte as $sp) {
         $anzahl = $model->getTeilnehmeranzahl($sp['id']);
         $statistiken[] = [
-            'name' => $sp['name'],
+            'name' =>  isset($sp['suffix']) ? $sp['name'] . ' (' . $sp['suffix'] . ')' : $sp['name'],
             'anzahl' => $anzahl,
             'max' => $sp['max_teilnehmer'],
             'prozent' => $sp['max_teilnehmer'] > 0 ? round(($anzahl / $sp['max_teilnehmer']) * 100, 1) : 0

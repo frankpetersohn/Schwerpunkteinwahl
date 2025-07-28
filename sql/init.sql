@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS schwerpunkte (
     max_teilnehmer INT NOT NULL DEFAULT 10,
     kombination_mit INT NULL,
     aktiv BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    suffix VARCHAR(3) NULL
 );
 
 CREATE TABLE IF NOT EXISTS klassen (
@@ -118,4 +119,23 @@ VALUES (
         'form_ueberschrift',
         'BüA Schwerpunkt-Einwahl',
         'Überschrift des Einwahlformulars'
+    ),
+    (
+        'suffix_halbierer',
+        '0',
+        'Aktiviert die Suffix-Funktion für gleiche Schwerpunkte (1=aktiviert, 0=deaktiviert)'
     );
+
+-- Änderiungen für Branch flexcombi
+-- Neue Spalte für flexible Kombinationen
+ALTER TABLE schwerpunkte ADD COLUMN kombinationen TEXT;
+
+ALTER TABLE schwerpunkte
+ADD COLUMN kombination_typ ENUM('einzeln', 'fest', 'flexibel') DEFAULT 'einzeln';
+
+-- Update bestehende Daten
+UPDATE schwerpunkte
+SET
+    kombination_typ = 'fest'
+WHERE
+    kombination_mit IS NOT NULL;

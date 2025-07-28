@@ -75,7 +75,11 @@ class EinwahlModel
         if ($schwerpunkt2['kombination_mit'] && $schwerpunkt2['kombination_mit'] != $schwerpunkt1_id) {
             return false;
         }
-
+        if ($schwerpunkt1['suffix'] && $schwerpunkt2['suffix']) {
+            if ($schwerpunkt1['suffix'] == $schwerpunkt2['suffix'] || $schwerpunkt1['name'] == $schwerpunkt2['name']) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -180,7 +184,8 @@ class EinwahlModel
     {
         return $this->db->fetchAll("
             SELECT e.*, k.bezeichnung as klasse, 
-                   s1.name as erstwunsch, s2.name as zweitwunsch
+                   s1.name as erstwunsch, s2.name as zweitwunsch,
+                   s1.suffix as erstwunsch_suffix, s2.suffix as zweitwunsch_suffix
             FROM einwahlen e 
             JOIN klassen k ON e.klasse_id = k.id
             JOIN schwerpunkte s1 ON e.erstwunsch_id = s1.id
@@ -188,9 +193,39 @@ class EinwahlModel
             ORDER BY e.created_at DESC
         ");
     }
-
-    public function updateSchwerpunkteConfig($config_text)
+    public function getEinwahlKombis()
     {
+        $einwahlen = $this->db->fetchAll("
+            SELECT e.erstwunsch_id as erstwunsch, 
+                   e.zweitwunsch_id as zweitwunsch
+            FROM einwahlen e
+            WHERE e.zweitwunsch_id IS NOT NULL");
+        $kombis = [];
+        foreach ($einwahlen as $einwahl) {
+            $erstwunsch = $einwahl['erstwunsch'];
+            $zweitwunsch = $einwahl['zweitwunsch'] ?: 'Kein Zweitwunsch';
+
+            // Kombi-String erstellen
+            if ($erstwunsch < $zweitwunsch) {
+                if (key_exists($erstwunsch . '-' . $zweitwunsch, $kombis)) {
+                    $kombis[$erstwunsch . '-' . $zweitwunsch]++;
+                } else {
+                    $kombis[$erstwunsch . '-' . $zweitwunsch] = 1;
+                }
+            } else {
+                if (key_exists($zweitwunsch . '-' . $erstwunsch, $kombis)) {
+                    $kombis[$zweitwunsch . '-' . $erstwunsch]++;
+                } else {
+                    $kombis[$zweitwunsch . '-' . $erstwunsch] = 1;
+                }
+            }
+        }
+        return $kombis;
+    }
+
+    public function updateSchwerpunkteConfig($config_text, $suffix_halbierer = '0')
+    {
+
         // Zuerst alle Schwerpunkte deaktivieren
         $this->db->query("UPDATE schwerpunkte SET aktiv = 0");
 
@@ -211,19 +246,26 @@ class EinwahlModel
             if (strpos($schwerpunkte_str, ';') !== false) {
                 // Kombination
                 $kombination = explode(';', $schwerpunkte_str);
+
                 $name1 = trim($kombination[0]);
                 $name2 = trim($kombination[1]);
+                $suffix1 = explode('#', $name1);
+                $suffix2 = explode('#', $name2);
+                $name1 = trim($suffix1[0]);
+                $name2 = trim($suffix2[0]);
 
                 // Ersten Schwerpunkt erstellen/aktualisieren
-                $id1 = $this->createOrUpdateSchwerpunkt($name1, $max_teilnehmer, null);
-                $id2 = $this->createOrUpdateSchwerpunkt($name2, $max_teilnehmer, null);
+                $id1 = $this->createOrUpdateSchwerpunkt($name1, $max_teilnehmer, $suffix1[1], null);
+                $id2 = $this->createOrUpdateSchwerpunkt($name2, $max_teilnehmer, $suffix2[1], null);
 
                 // Kombination setzen
                 $this->db->query("UPDATE schwerpunkte SET kombination_mit = ? WHERE id = ?", [$id2, $id1]);
                 $this->db->query("UPDATE schwerpunkte SET kombination_mit = ? WHERE id = ?", [$id1, $id2]);
             } else {
                 // Einzelner Schwerpunkt
-                $this->createOrUpdateSchwerpunkt($schwerpunkte_str, $max_teilnehmer, null);
+                $suffix = explode('#', $schwerpunkte_str);
+                $schwerpunkte_str = trim($suffix[0]);
+                $this->createOrUpdateSchwerpunkt($schwerpunkte_str, $max_teilnehmer, $suffix[1], null);
             }
         }
 
@@ -232,25 +274,29 @@ class EinwahlModel
             "UPDATE konfiguration SET wert = ? WHERE schluessel = 'schwerpunkte_config'",
             [$config_text]
         );
+        $this->db->query(
+            "UPDATE konfiguration SET wert = ? WHERE schluessel = 'suffix_halbierer'",
+            [$suffix_halbierer]
+        );
     }
 
-    private function createOrUpdateSchwerpunkt($name, $max_teilnehmer, $kombination_mit)
+    private function createOrUpdateSchwerpunkt($name, $max_teilnehmer, $suffix, $kombination_mit)
     {
         // Prüfen ob Schwerpunkt bereits existiert
-        $existing = $this->db->fetchOne("SELECT id FROM schwerpunkte WHERE name = ?", [$name]);
+        $existing = $this->db->fetchOne("SELECT id FROM schwerpunkte WHERE name = ? AND suffix = ?", [$name, $suffix]);
 
         if ($existing) {
             // Aktualisieren
             $this->db->query(
-                "UPDATE schwerpunkte SET max_teilnehmer = ?, kombination_mit = ?, aktiv = 1 WHERE id = ?",
-                [$max_teilnehmer, $kombination_mit, $existing['id']]
+                "UPDATE schwerpunkte SET max_teilnehmer = ?, kombination_mit = ?, suffix = ?, aktiv = 1 WHERE id = ?",
+                [$max_teilnehmer, $kombination_mit, $suffix, $existing['id']]
             );
             return $existing['id'];
         } else {
             // Neu erstellen
             $this->db->query(
-                "INSERT INTO schwerpunkte (name, max_teilnehmer, kombination_mit, aktiv) VALUES (?, ?, ?, 1)",
-                [$name, $max_teilnehmer, $kombination_mit]
+                "INSERT INTO schwerpunkte (name, max_teilnehmer, kombination_mit, suffix, aktiv) VALUES (?, ?, ?, ?, 1)",
+                [$name, $max_teilnehmer, $kombination_mit, $suffix]
             );
             return $this->db->lastInsertId();
         }

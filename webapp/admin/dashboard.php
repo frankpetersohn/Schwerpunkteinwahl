@@ -157,11 +157,11 @@
                                             </td>
                                             <td><?= htmlspecialchars($einwahl['email'] ?: '-') ?></td>
                                             <td>
-                                                <span class="badge badge-primary"><?= htmlspecialchars($einwahl['erstwunsch']) ?></span>
+                                                <span class="badge badge-primary"><?= htmlspecialchars(isset($einwahl['erstwunsch_suffix']) ? $einwahl['erstwunsch'] . ' (' . $einwahl['erstwunsch_suffix'] . ')' : $einwahl['erstwunsch']) ?></span>
                                             </td>
                                             <td>
                                                 <?php if ($einwahl['zweitwunsch']): ?>
-                                                    <span class="badge badge-primary"><?= htmlspecialchars($einwahl['zweitwunsch']) ?></span>
+                                                    <span class="badge badge-primary"><?= htmlspecialchars(isset($einwahl['zweitwunsch_suffix']) ? $einwahl['zweitwunsch'] . ' (' . $einwahl['zweitwunsch_suffix'] . ')' : $einwahl['zweitwunsch']) ?></span>
                                                 <?php else: ?>
                                                     <span class="text-muted">-</span>
                                                 <?php endif; ?>
@@ -264,6 +264,8 @@
                             <ul>
                                 <li><code>12,Informationstechnik</code> für einzelne Schwerpunkte</li>
                                 <li><code>12,Metall;Elektrotechnik</code> für Pflicht-Kombinationen</li>
+                                <li><code>10,Kraftfahrzeugtechnik#Mi</code> # Suffix gleicher Schwerpunkt aber Zwei Kurse</li>
+                                <li><code>10,Kraftfahrzeugtechnik#Do</code> wenn KFZ#Mi als Erstwunsch kann dieser nicht mehr belegt werden.</li>
                             </ul>
                         </div>
 
@@ -272,6 +274,10 @@
                             <div class="form-group">
                                 <textarea id="schwerpunkte_config" name="schwerpunkte_config" rows="8"
                                     placeholder="10,Kraftfahrzeugtechnik&#10;10,Informationstechnik&#10;12,Metall;Elektrotechnik"><?= htmlspecialchars($schwerpunkte_config) ?></textarea>
+                                <input type="checkbox" id="suffix_halbierer" name="suffix_halbierer" value="1" <?= $suffix_halbierer == 1 ? 'checked' : '' ?>
+                                    <label for="suffix_halbierer" class="checkbox_lable"> Halbieren der max. zuweisbaren Teilnehmerplätze ber Kursenkombinationen mit Suffix </label>
+                                </br>
+
                             </div>
                             <button type="submit" class="btn btn-success">Speichern</button>
                         </form>

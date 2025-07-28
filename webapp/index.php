@@ -35,6 +35,10 @@ $klassen = $model->getKlassen();
 $einwahl_offen = $model->istEinwahlOffen();
 $hinweistext = $model->getKonfiguration('hinweistext');
 $form_ueberschrift = $model->getKonfiguration('form_ueberschrift') ?: 'BüA Schwerpunkt-Einwahl';
+$einwahlkombinationen = $model->getEinwahlKombis();
+$suffix_halbierer = intval($model->getKonfiguration('suffix_halbierer'));
+
+
 
 // Teilnehmeranzahl für jeden Schwerpunkt ermitteln
 $teilnehmer_anzahl = [];
@@ -45,6 +49,8 @@ foreach ($schwerpunkte as $sp) {
 // Daten für JavaScript vorbereiten
 $js_schwerpunkte = json_encode($schwerpunkte);
 $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
+$js_einwahlkombinationen = json_encode($einwahlkombinationen);
+$js_suffix_halbierer = $suffix_halbierer;
 ?>
 
 <!DOCTYPE html>
@@ -132,7 +138,12 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                             $ist_voll = $aktuell >= $max;
                             ?>
                             <option value="<?= $sp['id'] ?>" <?= $ist_voll ? 'disabled' : '' ?>>
-                                <?= htmlspecialchars($sp['name']) ?> (<?= $aktuell ?>/<?= $max ?>)
+                                <?= htmlspecialchars($sp['name']) ?>
+                                <? if ($sp['suffix'] !== null) {
+                                    echo ' (' . htmlspecialchars($sp['suffix']) . ')';
+                                } ?>
+
+                                (<?= $aktuell ?>/<?= $max ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -167,6 +178,8 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
         // Daten für JavaScript
         window.schwerpunkte = <?= $js_schwerpunkte ?>;
         window.teilnehmerAnzahl = <?= $js_teilnehmer_anzahl ?>;
+        window.einwahlKombinationen = <?= $js_einwahlkombinationen ?>;
+        window.suffixHalbierer = <?= $js_suffix_halbierer ?>;
     </script>
     <script src="assets/js/einwahl.js"></script>
 </body>

@@ -46,7 +46,7 @@ if ($_POST) {
                     break;
 
                 case 'update_schwerpunkte':
-                    $model->updateSchwerpunkteConfig($_POST['schwerpunkte_config']);
+                    $model->updateSchwerpunkteConfig($_POST['schwerpunkte_config'], $_POST['suffix_halbierer'] ?? '0');
                     $message = 'Schwerpunkte wurden aktualisiert.';
                     break;
 
@@ -90,8 +90,8 @@ if ($_POST) {
                             $einwahl['nachname'],
                             $einwahl['klasse'],
                             $einwahl['email'] ?: '',
-                            $einwahl['erstwunsch'],
-                            $einwahl['zweitwunsch'] ?: '',
+                            isset($einwahl['erstwunsch_suffix']) ? $einwahl['erstwunsch'] . ' (' . $einwahl['erstwunsch_suffix'] . ')' : $einwahl['erstwunsch'],
+                            isset($einwahl['zweitwunsch_suffix']) ? $einwahl['zweitwunsch'] . ' (' . $einwahl['zweitwunsch_suffix'] . ')' : $einwahl['zweitwunsch'],
                             $einwahl['created_at']
                         ], ';');
                     }
@@ -199,13 +199,14 @@ $schwerpunkte_config = $model->getKonfiguration('schwerpunkte_config');
 $klassen_config = $model->getKonfiguration('klassen_config');
 $hinweistext = $model->getKonfiguration('hinweistext');
 $form_ueberschrift = $model->getKonfiguration('form_ueberschrift');
+$suffix_halbierer = $model->getKonfiguration('suffix_halbierer');
 
 // Statistiken berechnen
 $statistiken = [];
 foreach ($schwerpunkte as $sp) {
     $anzahl = $model->getTeilnehmeranzahl($sp['id']);
     $statistiken[] = [
-        'name' => $sp['name'],
+        'name' =>  isset($sp['suffix']) ? $sp['name'] . ' (' . $sp['suffix'] . ')' : $sp['name'],
         'anzahl' => $anzahl,
         'max' => $sp['max_teilnehmer'],
         'prozent' => $sp['max_teilnehmer'] > 0 ? round(($anzahl / $sp['max_teilnehmer']) * 100, 1) : 0
