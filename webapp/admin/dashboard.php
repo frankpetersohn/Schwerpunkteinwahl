@@ -256,7 +256,7 @@
                 <!-- Schwerpunkte -->
                 <div class="card config-card-full">
                     <div class="card-header">
-                        <h3>Schwerpunkt-Konfiguration</h3>
+                        <h3>Kurs-Konfiguration</h3>
                     </div>
                     <div class="card-body">
                         <div class="config-help">

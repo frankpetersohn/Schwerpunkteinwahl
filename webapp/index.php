@@ -122,7 +122,7 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                 </div>
 
                 <div class="form-group">
-                    <label for="erstwunsch_id">Schwerpunkt 1 <span class="required">*</span></label>
+                    <label for="erstwunsch_id">Erstwunsch <span class="required">*</span></label>
                     <select id="erstwunsch_id" name="erstwunsch_id" required>
                         <option value="">Bitte wählen...</option>
                         <?php foreach ($schwerpunkte as $sp): ?>
@@ -137,17 +137,17 @@ $js_teilnehmer_anzahl = json_encode($teilnehmer_anzahl);
                         <?php endforeach; ?>
                     </select>
                     <div class="course-info">
-                        Wählen Sie Ihren ersten Schwerpunkt. Rote Kurse sind bereits voll.
+                        Wählen Sie Ihren Erstwunsch aus. Ausgeblendete Kurse sind bereits ausgebucht.
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="zweitwunsch_id">Schwerpunkt 2 <span class="required">*</span></label>
+                    <label for="zweitwunsch_id">Zweitwunsch <span class="required">*</span></label>
                     <select id="zweitwunsch_id" name="zweitwunsch_id" required disabled>
-                        <option value="">Erst Schwerpunkt 1 wählen...</option>
+                        <option value="">Erst Kurs 1 wählen...</option>
                     </select>
                     <div class="course-info">
-                        Wird automatisch basierend auf Ihrem ersten Schwerpunkt gefiltert.
+                        Wird automatisch basierend auf Ihrem ersten Kurs gefiltert.
                     </div>
                 </div>
 
