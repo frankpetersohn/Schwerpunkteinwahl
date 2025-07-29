@@ -275,7 +275,7 @@
                                 <textarea id="schwerpunkte_config" name="schwerpunkte_config" rows="8"
                                     placeholder="10,Kraftfahrzeugtechnik&#10;10,Informationstechnik&#10;12,Metall;Elektrotechnik"><?= htmlspecialchars($schwerpunkte_config) ?></textarea>
                                 <input type="checkbox" id="suffix_halbierer" name="suffix_halbierer" value="1" <?= $suffix_halbierer == 1 ? 'checked' : '' ?>
-                                    <label for="suffix_halbierer" class="checkbox_lable"> Halbieren der max. zuweisbaren Teilnehmerplätze ber Kursenkombinationen mit Suffix </label>
+                                    <label for="suffix_halbierer" class="checkbox_lable"> Halbieren der max. zuweisbaren Teilnehmerplätze bei Kursekombinationen mit Suffix. </label>
                                 </br>
 
                             </div>
